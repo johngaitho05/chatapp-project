@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block css %}
+{% static  'css/home.css' %}
+{% endblock %}
+{% block body %}
+    <!-- we will have two parts, the texts part and the contacts lists -->
+    <section class="chat">
+        <div class="contacts">
+            <!-- a list of personal contacts -->
+
+            <!-- unordered list for the contacts -->
+            <ul>
+                <li><h3>Recent chats</h3></li>
+                <li>
+                    <div>
+                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
+                    </div>
+                    <div id="board">
+                        <h4 id="user">Dennis</h4>
+                        <i id="last_message">last text message</i>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
+                    </div>
+                    <div id="board">
+                        <h4 id="user">Willy</h4>
+                        <i id="last_message">last text message</i>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <img src="{% static 'img/girl.png' %}" alt="avatar" class="avatar">
+                    </div>
+                    <div id="board">
+                        <h4 id="user">Florence</h4>
+                        <i id="last_message">last text message</i>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
+                    </div>
+                    <div id="board">
+                        <h4 id="user">Charles</h4>
+                        <i id="last_message">last text message</i>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <img src="{% static 'img/girl.png' %}" alt="avatar" class="avatar">
+                    </div>
+                    <div id="board">
+                        <h4 id="user">Jane</h4>
+                        <i id="last_message">last text message</i>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- a list of text messages by a friend -->
+        <div class="texts">
+            <div class="header">
+                <div id="active-user">
+                    <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar" style="float:left">
+                    <h4 id="user" style="color:#05afaf;float:left;">Dennis</h4>
+                </div>
+
+            </div>
+            <div class="chats">
+                <div class="sender">
+                    Hi
+                </div>
+                <div class="receiver">
+                    Hey There
+                </div>
+                <div class="sender">
+                    Am good,
+                </div>
+                <div class="receiver">
+                    So who are you?
+                </div>
+                <div class="receiver">
+                    Huh!!!
+                </div>
+
+            </div>
+
+            <div class="input-message">
+                <!-- input field to enter our message -->
+
+                <input type="text" class="message"/>
+
+                <button id="send">Send Message</button>
+            </div>
+        </div>
+    </section>
+{% endblock %}

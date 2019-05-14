@@ -1,0 +1,108 @@
+/*
+ css file for the chat application 
+ */
+
+ .contacts{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:25%;
+    background-color:#ffffff;
+    
+ }
+ .contacts h3{
+     color: #05afaf;
+     font-weight: 900;
+     font-size:30px;
+     padding-left: 20px;
+ }
+
+ .contacts ul{
+     text-decoration: none;
+     list-style: none;
+     margin-right: 6px;
+     margin-left:0px;
+ 
+ }
+ .contacts ul li{
+     height: 40px;
+     width: 100%;
+     background-color:#05afaf;
+     padding-top: 5px;
+     padding-bottom: 30px;
+     margin-bottom:6px;
+     border-radius: 5px;
+     overflow: hidden;
+     padding-left:5px;
+
+ }
+ .contacts ul li div{
+     float:left;
+     margin: 0%;
+ }
+ .avatar{
+     border-radius: 50%;
+     margin-left:0;
+     height:50px;
+     width:50px;
+ }
+ 
+ #user {
+     font-weight: 900;
+     color:#fff;
+     margin: 0%;
+     font-size: 25px;
+ }
+ .texts{
+    position:fixed;
+    top:0;
+    right:0;
+    height:100%;
+    width:75%;
+    background-color: black;
+ }
+ .header{
+     background-color:#ffffff;
+ }
+.sender{
+    height:50px;
+    width:70%;
+    float:left;
+    background-color:white;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    margin-left: 15px;
+    padding-left: 15px;
+}
+.receiver{
+    height:50px;
+    width:70%;
+    float:right;
+    background-color:grey;
+    border-radius:7px;
+    margin-bottom: 14px;
+    margin-right: 15px;
+    padding-left: 15px;
+}
+.input-message{
+    position: fixed;
+    bottom: 0%;
+    width:100%;
+    height:60px;
+    background-color:#05afaf;
+    padding-top:20px;
+}
+.message{
+    width:62%;
+    height:30px;
+    border-radius: 6px;
+    border:none;
+}
+#send{
+    background-color:#000;
+    color: #05afaf;
+    float:left;
+    border:none;
+    padding:10px;
+}
