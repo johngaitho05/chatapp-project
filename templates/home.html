@@ -1,100 +1,91 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block css %}
-{% static  'css/home.css' %}
+{% static  'contacts/style.css' %}
 {% endblock %}
 {% block body %}
-    <!-- we will have two parts, the texts part and the contacts lists -->
-    <section class="chat">
-        <div class="contacts">
-            <!-- a list of personal contacts -->
+    {% if user.is_authenticated %}
+            <div class="row">
+            <div class="col-md-3 col-xs-12" id="phone-panel">
+                 <nav class="navbar navbar-collapse-sm navbar-light bg-light">
+                     <h6>Logged in as <span style="color:#13f3de">{{ user.first_name}}</span></h6>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse text-right" id="navbarNavAltMarkup">
+                        <a class="nav-item nav-link " href="javascript:{document.getElementById('current_user').submit();}">Contacts</a>
+                        <a class="nav-item nav-link active" href="#">Edit Account</a>
+                        <a class="nav-item nav-link " href="javascript:{document.getElementById('logout').submit();}">Logout</a>
+                        <form id="logout" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <input type="hidden"/>
+                </form>
+                      <form id="current_user" method="post" action="{% url 'show_contacts' %}">
+                          {% csrf_token %}
+                           <input type="hidden" name="current_user" value="{{ user.username }}"/>
+                      </form>
+                    </div>
 
-            <!-- unordered list for the contacts -->
-            <ul>
-                <li><h3>Recent chats</h3></li>
-                <li>
-                    <div>
-                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
-                    </div>
-                    <div id="board">
-                        <h4 id="user">Dennis</h4>
-                        <i id="last_message">last text message</i>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
-                    </div>
-                    <div id="board">
-                        <h4 id="user">Willy</h4>
-                        <i id="last_message">last text message</i>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <img src="{% static 'img/girl.png' %}" alt="avatar" class="avatar">
-                    </div>
-                    <div id="board">
-                        <h4 id="user">Florence</h4>
-                        <i id="last_message">last text message</i>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar">
-                    </div>
-                    <div id="board">
-                        <h4 id="user">Charles</h4>
-                        <i id="last_message">last text message</i>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <img src="{% static 'img/girl.png' %}" alt="avatar" class="avatar">
-                    </div>
-                    <div id="board">
-                        <h4 id="user">Jane</h4>
-                        <i id="last_message">last text message</i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- a list of text messages by a friend -->
-        <div class="texts">
-            <div class="header">
-                <div id="active-user">
-                    <img src="{% static 'img/man.png' %}" alt="avatar" class="avatar" style="float:left">
-                    <h4 id="user" style="color:#05afaf;float:left;">Dennis</h4>
+                </nav>
+                <div id="pheader">
+                    <hr width="100%" style="padding-bottom: 0"/>
+                    <h5>Tap to start conversation</h5>
+                    <small style="font-style: italic;">{{ count }}</small>
                 </div>
-
+                <hr style="margin-top: 0"/>
+                {% if mycontacts %}
+                    {% for contact in mycontacts %}
+                     <div class="card">
+                    <div class="image" style="float:left; height:100%">
+                        <img src="{% static 'img/man.png' %}" alt="image" id="dp"/>
+                        <h4>{{ contact.name }}</h4>
+                        <br />
+                        <small style="padding-left: 50px;">{{ contact.phone }}</small>
+                    </div>
+                </div>
+                    {% endfor %}
+                    {% elif message %}
+                    <p>{{ message }}</p>
+                {% endif %}
             </div>
-            <div class="chats">
-                <div class="sender">
-                    Hi
-                </div>
-                <div class="receiver">
-                    Hey There
-                </div>
-                <div class="sender">
-                    Am good,
-                </div>
-                <div class="receiver">
-                    So who are you?
-                </div>
-                <div class="receiver">
-                    Huh!!!
-                </div>
+            <div class="col-md-8 col-xs-12 md-offset-1">
+                <!-- a list of text messages by a friend -->
+                <div class="texts">
+                    <div class="header text-center" >
+                     <h3>Chat Panel</h3>
 
-            </div>
+                    </div>
+                    <div class="row">
+                        {%  if add %}
+                            <div class="col-md-4 offset-md-4 text-center" >
+                            <form action="{% url 'add_contact' %}" method="post">
+                                <div class="form-group">
+                                    <input name="user" type="hidden" value="{{ user }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" name="phone" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" class="form-control" />
+                                </div>
+                                <input type="submit" name="name" value="Save" class="btn btn-primary" />
+                            </form>
 
-            <div class="input-message">
-                <!-- input field to enter our message -->
-
-                <input type="text" class="message"/>
-
-                <button id="send">Send Message</button>
+                            </div>
+                        {% else %}
+            <div class="col-md-4 offset-md-4 text-center" >
+                <h4 style="padding-top: 200px;font-family: 'Lobster Two', cursive; ">Welcome to Smart-Chat. <br/> Tap on a contact to start converstion</h4>
+              </div>
+                        {% endif %}
+           </div>
+                </div>
             </div>
         </div>
-    </section>
+        {% else %}
+        <script type="text/javascript">
+          window.location = 'accounts/login'
+        </script>
+    {% endif %}
 {% endblock %}

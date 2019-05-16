@@ -25,11 +25,11 @@ def login(request):
             auth.login(request, user)
             return redirect('homepage')
         else:
-            return render(request, 'accounts/login.html',{'error':'Incorrect phone number or password'})
+            return render(request, 'accounts/login.html',{'error':'Invalid credentials'})
     return render(request, 'accounts/login.html')
 
 
 def logout(request):
     if request.method == 'POST':
         auth.logout(request)
-        return redirect('homepage')
+        return redirect('login')
