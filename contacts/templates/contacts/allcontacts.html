@@ -34,7 +34,7 @@
             <a href="javascript:{document.getElementById('{{ contact.phone }}').submit();}" id="chat_init">
             <div class="card contact">
             <div class="image" style="float:left; height:100%">
-                <img src="{% static 'img/man.png' %}" alt="image" id="dp"/>
+                <img src="{% static 'img/man.png' %}" alt="image" class="dp"/>
                 <h4>{{ contact.name }}</h4>
                 <br />
                 <small style="padding-left: 50px;">{{ contact.phone }}</small>
@@ -83,7 +83,7 @@
                 {% elif texts %}
                       {% if texts == "Null" %}
                           <script type="text/javascript">
-                        document.getElementById('active_user').innerHTML = '{{ contact.name }}';
+                        document.getElementById('active_user').innerHTML = '<img src="{% static 'img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ contact.name }}';
                         </script>
                           <form action="{% url 'send_message' %}" method="post" class="form-inline" id="input-message">
                    {% csrf_token %}
@@ -96,15 +96,30 @@
                     </form>
                        {% else %}
                           <script type="text/javascript">
-                        document.getElementById('active_user').innerHTML = '{{ contact.name }}';
+                        document.getElementById('active_user').innerHTML = '<img src="{% static 'img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ contact.name }}';
                         </script>
+                    {% for date in dateset %}
+                         {% if  date == today %}
+                             <p class="text-center date">Today</p>
+                             {% else %}
+                             <p class="text-center date">{{ date }}</p>
+                        {% endif %}
                     {% for text,time in texts %}
+                        {% if  text.date == date %}
                         {% if text.sender == user %}
-                        <div class="receiver">{{ text.content }}</div>
+                        <div class="receiver">
+                            <p> {{ text.content }}</p>
+                            <p class ="time">{{ time }}</p>
+                        </div>
                             {% else %}
-                            <div class="sender">{{ text.content }}</div>
+                            <div class="sender">
+                           <p >{{ text.content }}</p>
+                            <p class ="time">{{ time }}</p>
+                            </div>
+                        {% endif %}
                         {% endif %}
                     {% endfor %}
+                          {% endfor %}
                           {% endif %}
                    <form action="{% url 'send_message' %}" method="post" class="form-inline" id="input-message">
                    {% csrf_token %}

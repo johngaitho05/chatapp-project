@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import Contact, Message
 from django.contrib.auth.models import User
 import operator
+from datetime import date, time, datetime
 
 
 def show_contacts(request):
@@ -13,30 +14,37 @@ def show_contacts(request):
             else:
                 return render(request,'contacts/allcontacts.html',{'count':f[2], 'uname':f[0].first_name,'mycontacts':f[1],'user':f[0].username})
 
-    return render(request, 'home.html')
+    return render(request, 'accounts/Login.html')
 
 
 def add_contact(request, user):
     if request.method=='POST':
-        if request.POST['phone'] != "" and request.POST['name'] != "":
-            try:
-                Contact.objects.get(phone=request.POST['phone'],user=user)
-                f=checkuser(user)
-                return render(request, 'contacts/allcontacts.html',
-                              {'count': f[2], 'user': f[0].username, 'uname':f[0].first_name, 'mycontacts': f[1],
-                               'add': 'yes','error':'That number already exists in your contacts',})
-            except Contact.DoesNotExist:
-                new_contact = Contact(user=user,phone=request.POST['phone'],name=request.POST['name'],last_message="")
-                new_contact.save()
-                f = checkuser(user)
-                return render(request, 'contacts/allcontacts.html',
+        try:
+            User.objects.get(username=request.POST['phone'])
+            if request.POST['phone'] != "" and request.POST['name'] != "":
+                try:
+                    Contact.objects.get(phone=request.POST['phone'],user=user)
+                    f=checkuser(user)
+                    return render(request, 'contacts/allcontacts.html',
+                                  {'count': f[2], 'user': f[0].username, 'uname':f[0].first_name, 'mycontacts': f[1],
+                                   'add': 'yes','error':'That number already exists in your contacts',})
+                except Contact.DoesNotExist:
+                    new_contact = Contact(user=user,phone=request.POST['phone'],name=request.POST['name'],last_message="")
+                    new_contact.save()
+                    f = checkuser(user)
+                    return render(request, 'contacts/allcontacts.html',
                               {'count': f[2], 'user': f[0], 'uname':f[0].first_name, 'mycontacts': f[1],
                                'user_phone': user})
-        else:
-            f= checkuser(user)
-            return render(request, 'contacts/allcontacts.html',
+            else:
+                f= checkuser(user)
+                return render(request, 'contacts/allcontacts.html',
                           {'count': f[2], 'user': f[0].username, 'uname':f[0].first_name, 'mycontacts': f[1],
                            'add': 'yes','error': 'All fields reqiured'})
+        except User.DoesNotExist:
+            f = checkuser(user)
+            return render(request, 'contacts/allcontacts.html',
+                          {'count': f[2], 'user': f[0].username, 'uname': f[0].first_name, 'mycontacts': f[1],
+                           'add': 'yes', 'error': 'Number not registered with smartchat'})
 
     f=checkuser(user)
     return render(request, 'contacts/allcontacts.html',
@@ -57,20 +65,31 @@ def start_chat(request):
         texts = get_texts(request.POST['contact_id'],request.POST['user_id'])
         active_contact = get_object_or_404(Contact, phone=request.POST['contact_id'],user=request.POST['user_id'])
         f=checkuser(request.POST['user_id'])
+        myset = set()
+        if texts != "Null":
+            for message, time in texts:
+                myset.add(message.date)
+            dateset = myset
+        else:
+            dateset = set()
         return render(request, 'contacts/allcontacts.html',
-                      {'count': f[2], 'uname': f[0].first_name, 'mycontacts': f[1], 'user': f[0].username,'texts':texts,'contact':active_contact})
+                      {'count': f[2], 'uname': f[0].first_name, 'mycontacts': f[1], 'user': f[0].username,'texts':texts,'contact':active_contact,'dateset':dateset,'today':date.today()})
 
 
 def send_message(request):
     if request.method== 'POST':
-        new_message = Message(content=request.POST['message'],sender=request.POST['user_id'],receiver=request.POST['contact_id'])
+        new_message = Message(content=request.POST['message'],sender=request.POST['user_id'],receiver=request.POST['contact_id'],date = date.today(),time=datetime.now())
         new_message.save()
         active_contact = get_object_or_404(Contact, phone=request.POST['contact_id'],user=request.POST['user_id'])
         texts = get_texts(request.POST['contact_id'],request.POST['user_id'])
         f=checkuser(request.POST['user_id'])
+        myset = set()
+        for message, time in texts:
+            myset.add(message.date)
+        dateset = myset
         return render(request, 'contacts/allcontacts.html',
                       {'count': f[2], 'uname': f[0].first_name, 'mycontacts': f[1], 'user': f[0].username,
-                       'texts': texts, 'contact': active_contact})
+                       'texts': texts, 'contact': active_contact,'dateset':dateset,'today':date.today()})
 
 
 def checkuser(user):
@@ -101,6 +120,12 @@ def get_texts(contact_id,user_id):
         for message in all_messages:
             messages_dict.update({message: message.time})
 
-        return sorted(messages_dict.items(), key=operator.itemgetter(1), reverse=False)
+        sorted_by_date =  sorted(messages_dict.items(), key=operator.itemgetter(1), reverse=False)
+        new_dict = {}
+        for message,date in sorted_by_date:
+             new_dict.update({message: message.time})
 
+        sorted_by_time = sorted(new_dict.items(), key=operator.itemgetter(1), reverse=False)
+
+        return sorted_by_time
 

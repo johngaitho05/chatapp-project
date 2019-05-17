@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date,time,datetime
 import django
 
 
@@ -13,8 +14,9 @@ class Contact(models.Model):
 
 
 class Message(models.Model):
-    content  = models.TextField(default=' ')
-    time = models.DateTimeField(("Time"), default=django.utils.timezone.now)
+    content = models.TextField(default=None)
+    date = models.DateField(("Date"), default=date.today())
+    time = models.TimeField(("Time"),default=datetime.now().strftime("%H:%M"))
     sender = models.CharField(max_length=100)
     receiver = models.CharField(max_length=100)
 
