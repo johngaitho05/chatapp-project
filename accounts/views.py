@@ -23,7 +23,7 @@ def login(request):
         user = auth.authenticate(username=request.POST['phone'],password=request.POST['password'])
         if user is not None:
             auth.login(request, user)
-            return redirect('homepage')
+            return redirect('root')
         else:
             return render(request, 'accounts/login.html',{'error':'Invalid credentials'})
     return render(request, 'accounts/login.html')

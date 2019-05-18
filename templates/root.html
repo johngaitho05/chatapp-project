@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'homepage' user.username %}" id="redirect_form">
+        {% csrf_token %}
+        <input type="hidden"/>
+        </form>
+        <script type="text/javascript">
+        form1 = document.getElementById('redirect_form');
+        form1.submit();
+        </script>
+        {% else %}
+        <script type="text/javascript">
+        window.location = 'accounts/login'
+        </script>
+    {% endif %}
+</body>
+</html>

@@ -57,7 +57,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR,'templates'),
-                 os.path.join(BASE_DIR,'contacts/templates'),
                  os.path.join(BASE_DIR,'accounts/templates')
                  ],
         'APP_DIRS': True,
@@ -128,7 +127,6 @@ USE_TZ = True
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'chatapp/static'),
                     os.path.join(BASE_DIR, 'accounts/static'),
-                    os.path.join(BASE_DIR, 'contacts/static'),
                     ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
