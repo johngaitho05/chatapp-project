@@ -1,138 +1,135 @@
 
- body{
-    padding: 10px;
-}
- #phone-panel{
-     height:100%;
-     background-color:#00968800;
-     position: absolute;
- }
- .avatar{
-     border-radius: 50%;
-     margin-left:0;
-     height:30px;
-     width:30px;
- }
-
- #user {
-     font-weight: 900;
-     color:#fff;
-     margin:0;
-     padding-left: 5px;
-     font-size: 25px;
- }
- .texts{
-    position:fixed;
-    top:0;
-    right:0;
-    height:100%;
-    width:75%;
-    background-color:ghostwhite;
- }
- .header{
-     padding-top: 10px;
-     padding-bottom: 10px;
-     font-size: 25px;
-    background-color: #05afaf;
- }
-.sender{
-    width:70%;
-    float:left;
-    background-color: #13f3de;
-    border-radius: 7px;
-    margin-top: 14px;
-    margin-left: 15px;
-    padding-left: 15px;
-    padding-top: 5px;
-    line-height: 1.2rem;
-    font-size: 15px;
-}
-.receiver{
-    width:70%;
-    float:right;
-    background-color:tan;
-    border-radius:7px;
-    margin-top: 14px;
-    margin-right: 15px;
-    padding-left: 15px;
-    padding-top: 5px;
-    line-height: 1.2rem;
-    font-size: 15px;
-}
-#input-message{
-    position: fixed;
-    bottom: 5px;
-    width:100%;
-    height:60px;
-    background-color:ghostwhite;
-}
-#send{;
-    padding:0 30px;
-    height: 60px;
-    background-color:ghostwhite;
-    border:none;
-}
-#message{
-    border-radius: 14px;
-    width: 40%;
-    height: 60px;
-    padding:20px 0 10px 5px;
-    max-height: 60px;
-}
-/*.form-group{*/
-    /*padding-left: 30px;*/
+ /*body{*/
+    /*padding: 10px;*/
 /*}*/
-#pheader{
-    line-height:1px;
-    line-stacking: block-line-height;
-    padding-bottom: 20px;
-}
-#phone-panel hr{
-     margin-bottom: 0;
- }
-.dp{
-     border-radius: 50%;
-     height:40px;
-     width:40px;
-     margin-top:5px;
- }
- #phone-panel .card{
-     margin-top: 5px;
-     padding: 5px 0 15px 10px;
-     line-height: 0;
-     background-color:#05afaf;
- }
- #phone-panel .card h4{
-     color:aliceblue;
-     display: inline;
-     padding-top: 50px;
- }
+ /*#phone-panel{*/
+     /*height:100%;*/
+     /*background-color:#00968800;*/
+     /*position: absolute;*/
+ /*}*/
+ /*.avatar{*/
+     /*border-radius: 50%;*/
+     /*margin-left:0;*/
+     /*height:30px;*/
+     /*width:30px;*/
+ /*}*/
 
- .content{
-     padding-top: 200px;
- }
+ /*#user {*/
+     /*font-weight: 900;*/
+     /*color:#fff;*/
+     /*margin:0;*/
+     /*padding-left: 5px;*/
+     /*font-size: 25px;*/
+ /*}*/
+ /*.texts{*/
+    /*position:fixed;*/
+    /*top:0;*/
+    /*right:0;*/
+    /*height:100%;*/
+    /*width:75%;*/
+    /*background-color:ghostwhite;*/
+ /*}*/
+ /*.header{*/
+     /*padding-top: 10px;*/
+     /*padding-bottom: 10px;*/
+     /*font-size: 25px;*/
+    /*background-color: #05afaf;*/
+ /*}*/
+/*.sender{*/
+    /*width:70%;*/
+    /*background-color: #13f3de;*/
+    /*border-radius: 7px;*/
+    /*margin-top: 14px;*/
+    /*margin-left: 15px;*/
+    /*padding-left: 15px;*/
+    /*padding-top: 5px;*/
+    /*line-height: 1.2rem;*/
+    /*font-size: 15px;*/
+/*}*/
+/*.receiver{*/
+    /*width:70%;*/
+    /*background-color:tan;*/
+    /*border-radius:7px;*/
+    /*margin-top: 14px;*/
+    /*margin-right: 15px;*/
+    /*padding-left: 15px;*/
+    /*padding-top: 5px;*/
+    /*line-height: 1.2rem;*/
+    /*font-size: 15px;*/
+/*}*/
+/*#input-message{*/
+    /*position: fixed;*/
+    /*bottom: 5px;*/
+    /*width:100%;*/
+    /*height:60px;*/
+    /*background-color:ghostwhite;*/
+/*}*/
+/*#send{;*/
+    /*padding:0 30px;*/
+    /*height: 60px;*/
+    /*background-color:ghostwhite;*/
+    /*border:none;*/
+/*}*/
+/*#message{*/
+    /*border-radius: 14px;*/
+    /*width: 40%;*/
+    /*height: 60px;*/
+    /*padding:20px 0 10px 5px;*/
+    /*max-height: 60px;*/
+/*}*/
+/*!*.form-group{*!*/
+    /*!*padding-left: 30px;*!*/
+/*!*}*!*/
+/*#pheader{*/
+    /*line-height:1px;*/
+    /*padding-bottom: 20px;*/
+/*}*/
+/*#phone-panel hr{*/
+     /*margin-bottom: 0;*/
+ /*}*/
+/*.dp{*/
+     /*!*border-radius: 50%;*!*/
+     /*height:60px;*/
+     /*width:60px;*/
+     /*margin-top:5px;*/
+ /*}*/
+ /*#phone-panel .card{*/
+     /*margin-top: 5px;*/
+     /*padding: 5px 0 15px 10px;*/
+     /*line-height: 0;*/
+     /*background-color:#05afaf;*/
+ /*}*/
+ /*#phone-panel .card h4{*/
+     /*color:aliceblue;*/
+     /*display: inline;*/
+     /*padding-top: 50px;*/
+ /*}*/
 
- .contact{
-     cursor: pointer;
- }
+ /*.content{*/
+     /*padding-top: 200px;*/
+ /*}*/
 
-#chat_init{
-    text-decoration: none;
-}
-#activeimg{
-    margin-right: 10px;
-    margin-top: 0;
-}
+ /*.contact{*/
+     /*cursor: pointer;*/
+ /*}*/
 
-.time{
-    position: relative;
-    bottom:0;
-    padding-left: 85%;
-    font-size: 14px;
-    margin-bottom: 0;
-    display: inline-block;
-}
-.date{
-    margin-bottom: 0.5rem;
+/*#chat_init{*/
+    /*text-decoration: none;*/
+/*}*/
+/*#activeimg{*/
+    /*margin-right: 10px;*/
+    /*margin-top: 0;*/
+/*}*/
 
-}
+/*.time{*/
+    /*position: relative;*/
+    /*bottom:0;*/
+    /*padding-left: 85%;*/
+    /*font-size: 14px;*/
+    /*margin-bottom: 0;*/
+    /*display: inline-block;*/
+/*}*/
+/*.date{*/
+    /*margin-bottom: 0.5rem;*/
+
+/*}*/

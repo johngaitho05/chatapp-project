@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block css %}
-{% static  'contacts/style.css' %}
+{% static  'css/home.css' %}
 {% endblock %}
 {% block body %}
     {% if user.is_authenticated %}
@@ -20,8 +20,8 @@
                     <input type="hidden" name="user" value="{{ user.username }}"/>
                 </form>
                     {% else %}
-                    <a class="nav-item nav-link" href="{% url 'homepage' user.username %}">Recent chats</a>
                  <a class="nav-item nav-link" id="add" href="javascript:{document.getElementById('init-add').submit();}">Add contact</a>
+                    <a class="nav-item nav-link" href="{% url 'homepage' user.username %}">Recent chats</a>
                 <form action="{% url 'add_contact' %}" method="get" id="init-add">
                     {% csrf_token %}
                     <input type="hidden" name="user" value="{{ user.username }}"/>
@@ -42,8 +42,13 @@
             <h5 id="contact-header">Tap to start conversation</h5>
             {% elif recents %}
             <h5 id="contact-header">Recent chats</h5>
+            {% elif message %}
+            <h5 id="contact-header">{{ message }}</h5>
             {% endif %}
-            <small style="font-style: italic;">{{ count }}</small>
+        {% if count %}
+            <div id="count" style="padding:0 0 10px 0; "><small>{{ count }}</small></div>
+            <br/>
+            {% endif %}
         </div>
         <hr style="margin-top: 0"/>
         {% if mycontacts %}
@@ -54,7 +59,7 @@
                 <img src="{% static 'img/man.png' %}" alt="image" class="dp"/>
                 <h4>{{ contact.name }}</h4>
                 <br />
-                <small style="padding-left: 50px;">{{ contact.phone }}</small>
+                <small style="padding-left: 50px; color:black">{{ contact.phone }}</small>
             </div>
         </div>
             </a>
@@ -77,7 +82,7 @@
                 <img src="{% static 'img/man.png' %}" alt="image" class="dp"/>
                 <h4>{{ contact.name }}</h4>
                 <br />
-                <small style="padding-left: 50px;">{{ text }}</small>
+                <small style="padding-left: 50px;color:#0900ff;font-style: italic">{{ text }}</small>
             </div>
         </div>
             </a>
@@ -93,10 +98,10 @@
     <div class="col-md-8 col-xs-12 md-offset-1 d-none d-sm-block">
         <!-- a list of text messages by a friend -->
         <div class="texts">
-            <div class="header text-center" >
+            <div class="header" >
                 <h3 id="active_user">Chat Panel</h3>
-
             </div>
+     <section id="texts_section">
     {% if add %}
             <div class="row">
                 <div class="col-md-4 offset-md-4 text-left">
@@ -119,14 +124,14 @@
                     </form>
                 </div>
             </div>
-                {% elif texts %}
-                      {% if texts == "Null" %}
+                {% elif textlist %}
+                      {% if textlist == 'Null' %}
                           <script type="text/javascript">
                         document.getElementById('active_user').innerHTML = '<img src="{% static 'img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ contact.name }}';
                         </script>
                           <form action="{% url 'send_message' %}" method="post" class="form-inline" id="input-message">
                    {% csrf_token %}
-                    <div class="form-group" style="width:100%">
+                    <div class="form-group" style="width:100%" id="text_form">
                         <input type="hidden" name="user_id" value="{{ user.username }}"/>
                         <input type="hidden" name="contact_id" value="{{ contact.phone }}"/>
                     <textarea name="message" id="message" cols="30" rows="10" placeholder="Type a message"></textarea>
@@ -137,27 +142,33 @@
                           <script type="text/javascript">
                         document.getElementById('active_user').innerHTML = '<img src="{% static 'img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ contact.name }}';
                         </script>
-                    {% for date in dateset %}
-                         {% if  date == today %}
-                             <p class="text-center date">Today</p>
+                    {% for date,messages in textlist%}
+                        {% if  date == today %}
+                          <p class="text-center date">Today</p>
                              {% else %}
-                             <p class="text-center date">{{ date }}</p>
+                            <p class="text-center date">{{ date }}</p>
                         {% endif %}
-                    {% for text,time in texts %}
-                        {% if  text.date == date %}
-                        {% if text.sender == user.username %}
+                        {% for message,time in messages %}
+                            {% if message.sender == user.username %}
                         <div class="receiver">
-                            <p> {{ text.content }}</p>
+                        {% if message.content == 'No content' %}
+                            <p></p>
+                            {% else %}
+                            <p> {{ message.content }}</p>
+                            {% endif %}
                             <p class ="time">{{ time }}</p>
                         </div>
                             {% else %}
                             <div class="sender">
-                           <p >{{ text.content }}</p>
+                           {% if message.content == 'No content' %}
+                            <p></p>
+                            {% else %}
+                            <p> {{ message.content }}</p>
+                            {% endif %}
                             <p class ="time">{{ time }}</p>
                             </div>
                         {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                           {% endfor %}
                           {% endif %}
                    <form action="{% url 'send_message' %}" method="post" class="form-inline" id="input-message">
@@ -174,6 +185,7 @@
                         <span class="input-group-append"><button class="btn btn-primary" id="send" type="submit"><img src="{% static 'png/caret-right-6x.png' %}"/></button></span>
                     </div >
                     </form>
+        </section>
                         </div>
                     {% else %}
         <div class="row">
@@ -184,21 +196,52 @@
         </div>
 
         </div>
-    </div>
-        <script type="text/javascript">
-        $(document).ready(function(){
-            $('#send').click(function(){
-                form1 = document.getElementById('text_form');
-                message = document.getElementById('message').value;
-                if(message !== ""){
-                  form1.submit();
-                }
-            });
-        });
-        </script>
+            </div>
+
         {% else %}
         <script type="text/javascript">
           window.location = 'accounts/login'
         </script>
     {% endif %}
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#                             <p class="text-center date">{{ date }}</p>#}
+{#                        {% if message.sender == user.username %}#}
+{#                        <div class="receiver">#}
+{#                            <p> {{ message.content }}</p>#}
+{#                            <p class ="time">{{ time }}</p>#}
+{#                        </div>#}
+{#                            {% else %}#}
+{#                            <div class="sender">#}
+{#                           <p >{{ message.content }}</p>#}
+{#                            <p class ="time">{{ time }}</p>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                             {% else %}#}
+{#                             <p class="text-center date">Today</p>#}
+{#                        {% if message.sender == user.username %}#}
+{#                        <div class="receiver">#}
+{#                            <p> {{ message.content }}</p>#}
+{#                            <p class ="time">{{ time }}</p>#}
+{#                        </div>#}
+{#                            {% else %}#}
+{#                            <div class="sender">#}
+{#                           <p >{{ message.content }}</p>#}
+{#                            <p class ="time">{{ time }}</p>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                        {% endif %}#}
+{#                        {% endfor %}#}

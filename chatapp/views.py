@@ -9,9 +9,9 @@ def show_contacts(request):
     if request.method == 'GET':
         user = request.GET['user']
         f = checkuser(user)
-        if not f:
+        if not f[0]:
             return render(request, 'home.html',
-                          {'count': '0 contacts', 'message': 'You have not added any contact'})
+                          {'count': f[1], 'message': 'You have not added any contact'})
         else:
             return render(request, 'home.html',
                       {'count': f[1], 'mycontacts': f[0]})
@@ -21,7 +21,7 @@ def add_contact(request):
     if request.method == 'GET':
         user = request.GET['user']
         f = checkuser(user)
-        if not f:
+        if not f[0]:
             return render(request, 'home.html',
                           {'count': '0 contacts','message':'You have not added any contact','add': 'yes'})
         return render(request, 'home.html',
@@ -48,7 +48,7 @@ def add_contact(request):
                           {'count': f[1], 'mycontacts': f[0],'add': 'yes','error': 'All fields reqiured'})
         except User.DoesNotExist:
             f = checkuser(user)
-            if not f:
+            if not f[0]:
                 return render(request, 'home.html',
                               {'count': '0 contacts', 'message': 'You have not added any contact' , 'add': 'yes',
                                'error': 'Number not registered with smartchat'})
@@ -76,25 +76,40 @@ def start_chat(request):
             for message, time in texts:
                 myset.add(message.date)
             dateset = myset
+            biglist = []
+            for mdate in dateset:
+                mylist = []
+                for message, time in texts:
+                    if message.date == mdate:
+                        mylist.append((message,time))
+                biglist.append((mdate,mylist))
+            textlist = biglist
             if request.POST['page'] == 'chats':
                 recent_chats = Contact.objects.filter(user=request.POST['user_id'], last_message__isnull=False)
                 chatdict = {}
                 for recent_chat in recent_chats:
                     chatdict.update({recent_chat: recent_chat.last_message})
-                chatlist = [(contact, text) for contact, text in chatdict.items()]
-                if chatlist:
+                chatlist = []
+                for contact, text in chatdict.items():
+                    if text != '':
+                        if len(text) > 40:
+                            chatlist.append((contact, text[:40] + '...'))
+                        else:
+                            chatlist.append((contact, text))
+                chatlist = chatlist
+                if len(chatlist) > 0:
                     return render(request, 'home.html',
                                   {'texts': texts, 'contact': active_contact,
-                                   'dateset': dateset, 'today': date.today(), 'recents': chatlist[::-1]})
+                                   'textlist': textlist[::-1], 'today': date.today(), 'recents': chatlist[::-1]})
                 else:
                     return render(request, 'home.html',
                                   {'texts': texts, 'contact': active_contact,
-                                   'dateset': dateset, 'today': date.today(), 'recents': 'Null'})
+                                   'textlist': textlist, 'today': date.today(), 'recents': 'Null'})
 
             elif request.POST['page'] == 'contacts':
                 return render(request, 'home.html',
                               {'count': f[1], 'mycontacts': f[0], 'texts': texts, 'contact': active_contact,
-                               'dateset': dateset, 'today': date.today()})
+                               'textlist': textlist[::-1], 'today': date.today()})
 
         else:
             if request.POST['page'] == 'chats':
@@ -105,22 +120,29 @@ def start_chat(request):
                 chatlist = [(contact, text) for contact, text in chatdict.items()]
                 if chatlist:
                     return render(request, 'home.html',
-                                  {'texts': 'Null', 'contact': active_contact,'recents': chatlist})
+                                  {'textlist': 'Null', 'contact': active_contact,'recents': chatlist[::-1]})
                 else:
                     return render(request, 'home.html',
-                                  {'texts': 'Null', 'contact': active_contact,'recents': 'Null'})
+                                  {'textlist': 'Null', 'contact': active_contact,'recents': 'Null'})
 
             elif request.POST['page'] == 'contacts':
                 return render(request, 'home.html',
-                              {'count': f[1], 'mycontacts': f[0], 'texts': 'Null', 'contact': active_contact,})
+                              {'count': f[1], 'mycontacts': f[0], 'textlist': 'Null', 'contact': active_contact,})
 
 
 def send_message(request):
     if request.method== 'POST':
-        new_message = Message(content=request.POST['message'],sender=request.POST['user_id'],receiver=request.POST['contact_id'],date = date.today(),time=datetime.now())
+        if request.POST['message'] != "":
+            new_message = Message(content=request.POST['message'],sender=request.POST['user_id'],receiver=request.POST['contact_id'],date = date.today(),time=datetime.now())
+        else:
+            new_message = Message(content="No content", sender=request.POST['user_id'],
+                                  receiver=request.POST['contact_id'], date=date.today(), time=datetime.now())
         new_message.save()
         active_contact = get_object_or_404(Contact, phone=request.POST['contact_id'],user=request.POST['user_id'])
-        active_contact.last_message = request.POST['message']
+        if request.POST['message'] != "":
+            active_contact.last_message = request.POST['message']
+        else:
+            active_contact.last_message = "(No content)"
         active_contact.save()
         texts = get_texts(request.POST['contact_id'],request.POST['user_id'])
         f=checkuser(request.POST['user_id'])
@@ -128,22 +150,37 @@ def send_message(request):
         for message, time in texts:
             myset.add(message.date)
         dateset = myset
+        biglist = []
+        for mdate in dateset:
+            mylist = []
+            for message, time in texts:
+                if message.date == mdate:
+                    mylist.append((message, time))
+            biglist.append((mdate, mylist))
+        textlist = biglist
         if request.POST['page'] == 'contacts':
-            return render(request, 'home.html',{'count': f[1], 'mycontacts': f[0], 'texts': texts, 'contact': active_contact,'dateset':dateset,'today':date.today()})
+            return render(request, 'home.html',{'count': f[1], 'mycontacts': f[0], 'contact': active_contact,'textlist': textlist[::-1],'today':date.today()})
         elif request.POST['page'] == 'chats':
             recent_chats = Contact.objects.filter(user=request.POST['user_id'], last_message__isnull=False)
             chatdict = {}
             for recent_chat in recent_chats:
                 chatdict.update({recent_chat: recent_chat.last_message})
-            chatlist = [(contact, text) for contact, text in chatdict.items()]
-            if chatlist:
+            chatlist = []
+            for contact, text in chatdict.items():
+                if text != '':
+                    if len(text) > 40:
+                        chatlist.append((contact, text[:40] + '...'))
+                    else:
+                        chatlist.append((contact, text))
+            chatlist = chatlist
+            if len(chatlist) > 0:
                 return render(request, 'home.html',
                               {'texts': texts, 'contact': active_contact,
-                               'dateset': dateset, 'today': date.today(), 'recents': chatlist[::-1]})
+                               'textlist': textlist[::-1], 'today': date.today(), 'recents': chatlist[::-1]})
             else:
                 return render(request, 'home.html',
                               {'texts': texts, 'contact': active_contact,
-                               'dateset': dateset, 'today': date.today(), 'recents': 'Null'})
+                               'textlist': textlist[::-1], 'today': date.today(), 'recents': 'Null'})
 
 
 def checkuser(user):
@@ -186,8 +223,15 @@ def home(request,user_id):
         chatdict ={}
         for recent_chat in recent_chats:
            chatdict.update({recent_chat:recent_chat.last_message})
-        chatlist = [(contact,text) for contact,text in chatdict.items()]
-        if chatlist:
+        chatlist = []
+        for contact, text in chatdict.items():
+            if text != '':
+                if len(text)>40:
+                    chatlist.append((contact,text[:40]+'...'))
+                else:
+                    chatlist.append((contact,text))
+        chatlist = chatlist
+        if len(chatlist)>0:
             return render(request, 'home.html',{'recents':chatlist[::-1]})
         else:
             return render(request, 'home.html', {'recents': 'Null'})
