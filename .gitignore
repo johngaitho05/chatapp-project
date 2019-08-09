@@ -12,6 +12,5 @@ db.sqlite3
 /static
 Pipfile
 Pipfile.lock
-**/.idea/workspace.xml
-**/.idea/tasks.xml
-.DS_Store
+
+
