@@ -13,4 +13,5 @@ db.sqlite3
 Pipfile
 Pipfile.lock
 dir_to_ignore/.idea
-
+*.xml
+*.reason.txt
