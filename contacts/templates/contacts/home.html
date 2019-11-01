@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'contacts/base.html' %}
 {% load staticfiles %}
 {% block css %}
 {% static  'css/home.css' %}
 {% endblock %}
 {% block body %}
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and not user.is_superuser%}
             <div class="row">
     <div class="col-md-3 col-xs-12" id="phone-panel">
         <nav class="navbar navbar-collapse-sm navbar-light bg-light">
