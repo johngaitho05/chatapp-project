@@ -223,9 +223,8 @@ def generate_valsdict(user_id,contact_id,page):
     f = checkuser(user_id)
     textlist = create_chat_set(texts)
     if page == 'contacts':
-          valsdict = {'count': mark_safe(json.dumps(f[1])), 'mycontacts': mark_safe(json.dumps(f[0])),
-                      'contact': mark_safe(json.dumps(active_contact)), 'textlist': mark_safe(json.dumps(textlist[::-1])),
-                       'today': mark_safe(json.dumps(date.today()))}
+          valsdict = {'count': f[1], 'mycontacts': f[0], 'contact': active_contact, 'textlist': textlist[::-1],
+                       'today': date.today()}
     else :
         chatlist = get_chatlist(user_id)
         if len(chatlist) > 0:
