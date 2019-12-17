@@ -1,0 +1,256 @@
+{% extends 'chat/base.html' %}
+{% load staticfiles %}
+{% block css %}
+    {% static  'chat/css/home.css' %}
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-3 col-xs-12" id="phone-panel">
+            <nav class="navbar navbar-collapse-sm navbar-light bg-light">
+                <h6>Logged in as <span style="color:#13f3de; font-size:12px">{{ user.first_name }}({{ user.username }})</span></h6>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse text-right" id="navbarNavAltMarkup">
+                    {% if recents %}
+                        <a class="nav-item nav-link" href="{% url 'show_contacts' %}">Contacts</a>
+                    {% else %}
+                        <a class="nav-item nav-link" id="add" href="javascript:{document.getElementById('init-add').submit();}">Add contact</a>
+                        <a class="nav-item nav-link" href="{% url 'homepage'%}">Recent chats</a>
+                        <form action="{% url 'add_contact'%}" method="get" id="init-add">
+                            {% csrf_token %}
+                            <input type="hidden"/>
+                        </form>
+                    {% endif %}
+                    <a class="nav-item nav-link active" href="#">Edit Account</a>
+                    <a class="nav-item nav-link " href="javascript:{document.getElementById('logout').submit();}">Logout</a>
+                    <form id="logout" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <input type="hidden"/>
+                    </form>
+                </div>
+
+            </nav>
+            <div id="pheader">
+                <hr style="padding-bottom: 0;width:100%"/>
+                {%  if mycontacts %}
+                    <h5 id="contact-header">Tap to start conversation</h5>
+                {% elif recents %}
+                    <h5 id="contact-header">Recent chats</h5>
+                {% elif message %}
+                    <h5 id="contact-header">{{ message }}</h5>
+                {% endif %}
+                {% if count %}
+                    <div id="count" style="padding:0 0 10px 0; "><small>{{ count }}</small></div>
+                    <br/>
+                {% endif %}
+            </div>
+            <hr style="margin-top: 0"/>
+            {% if chatrooms %}
+                {% for contact, room in chatrooms %}
+                    <div id="contacts-log">
+                    <a href="javascript:{window.location.pathname = '/chat/{{room}}/';}">
+                        <div class="card contact">
+                            <div style="float:left; height:100%">
+                                <img src="{% static 'chat/img/man.png' %}" alt="image" class="dp"/>
+                                <h4>{{ contact.name }}</h4>
+                                <br />
+                                <small style="padding-left: 50px; color:black">{{ contact.phone }}</small>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% elif message %}
+                <script type="text/javascript">
+                    document.getElementById('contact-header').innerHTML = '{{ message }}';
+                </script>
+            {% elif recents and recents != 'Null' %}
+                {% for contact, text, chatroom in recents %}
+                    <a href="javascript:{window.location.pathname = '/chat/' + {{chatroom}} + '/';}" id="chat_init">
+                        <div class="card contact">
+                            <div class="image" style="float:left; height:100%">
+                                <img src="{% static 'chat/img/man.png' %}" alt="image" class="dp"/>
+                                <h4>{{ contact.name }}</h4>
+                                <br />
+                                <small style="padding-left: 50px;color:#0900ff;font-style: italic" id="{{ contact.id }}">{{ text }}</small>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+        <div class="col-md-8 col-xs-12 md-offset-1 d-none d-sm-block">
+            <!-- a list of text messages by a friend -->
+            <div class="texts">
+                <div class="header" >
+                    <h3 id="active_user">Chat Panel</h3>
+                </div>
+                <div id="texts_section">
+                    {% if add %}
+                        <div class="row">
+                            <div class="col-md-4 offset-md-4 text-left">
+                                <form action="{% url 'add_contact' %}" method="post" style="padding-top: 150px;">
+                                    {% csrf_token %}
+                                    {%  if error %}
+                                        <span style="color:red;padding-bottom:30px;text-align: center">{{ error }}</span>
+                                    {% endif %}
+
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="text" name="phone" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="name" class="form-control" />
+                                    </div>
+                                    <input type="submit" value="Save" class="btn btn-primary" style="width:100%"/>
+                                </form>
+                            </div>
+                        </div>
+                    {% elif texts_list  %}
+                        <script type="text/javascript">
+                            document.getElementById('active_user').innerHTML = '<img src="{% static 'chat/img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ active_contact.name }}';
+                        </script>
+                        {% if texts_list == 'Null' %}
+                            <form  class="form-inline" id="input-message">
+                                <div class="form-group" style="width:100%" id="text_form">
+                                    <textarea name="message" id="message" cols="30" rows="10" placeholder="Type a message"></textarea>
+                                    <span class="input-group-append">
+                        <button class="btn btn-primary" id="send" >
+                        <img src="{% static 'chat/img/png/caret-right-6x.png' %}"/>
+                        </button>
+                    </span>
+                                </div >
+                            </form>
+                        {% else %}
+                            <div id="chatlog">
+                                {% for date,texts in texts_list %}
+                                    {% if date == today %}
+                                        <p class="text-center date" >Today</p>
+                                    {% else %}
+                                        <p class="text-center date" >{{ date }}</p>
+                                    {% endif %}
+                                    {% for text in texts %}
+                                        {% if text.author == user %}
+                                            <div class="sent">
+                                                <p > {{ text.content }}</p>
+                                                <p class ="time">{{ text.time }}</p>
+                                            </div>
+                                        {% else %}
+                                            <div class="replies">
+                                                <p> {{ text.content }}</p>
+                                                <p class ="time">{{ text.time }}</p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                            <form  class="form-inline" id="input-message">
+                                <div class="form-group" style="width:100%" id="text_form">
+                                    <textarea name="message" id="message" cols="30" rows="10" placeholder="Type a message"></textarea>
+                                    <span class="input-group-append">
+                        <button class="btn btn-primary" id="send" >
+                        <img src="{% static 'chat/img/png/caret-right-6x.png' %}"/>
+                        </button>
+                    </span>
+                                </div >
+                            </form>
+                        {% endif %}
+
+                        </div>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                        <div class="col-md-4 offset-md-4 text-center" >
+                            <h4 style="padding-top: 200px;font-family: 'Lobster Two', cursive; ">Welcome to Smart-Chat. <br/> Tap on a contact to start conversation</h4>
+                        </div>
+                    {% endif %}
+                    </div>
+        </div>
+    </div>
+    {% if room_name_json %}
+        <script type="text/javascript">
+            let roomName = {{ room_name_json }};
+            let username = {{ username_json }};
+
+            let chatSocket = new ReconnectingWebSocket(
+                'ws://' + window.location.host +
+                '/ws/chat/' + roomName + '/');
+
+            chatSocket.onmessage = function(e) {
+                let data = JSON.parse(e.data);
+                let message = data['message'];
+                let author = message['author'];
+                let last_text = data['last_text'];
+
+                let msgDiv = document.createElement('div');
+                let msgTag = document.createElement('p');
+                let timeTag = document.createElement('p');
+                msgTag.textContent = message.content;
+                timeTag.textContent = message.time;
+                timeTag.className = "time";
+                if(author === username){
+                    msgDiv.className = "sent";
+                }else{
+                    msgDiv.className = "replies";
+                }
+                msgDiv.appendChild(msgTag);
+                msgDiv.appendChild(timeTag);
+                document.querySelector('#chatlog').appendChild(msgDiv);
+                let active_contact = document.getElementById('{{ active_contact.id }}');
+                active_contact.innerHTML = last_text;
+            };
+            chatSocket.onclose = function() {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            document.querySelector('#message').focus();
+            document.querySelector('#message').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#send').click();
+                }
+            };
+            document.querySelector('#send').onclick = function() {
+                let messageInputDom = document.querySelector('#message');
+                let message = messageInputDom.value;
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'command': 'new_message',
+                    'chat_room': roomName,
+                    'from':username,
+                }));
+                messageInputDom.value = '';
+            };
+        </script>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

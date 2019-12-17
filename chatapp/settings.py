@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
-    'contacts.apps.ContactsConfig',
+    'chat.apps.ContactsConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,7 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'chatapp/static'),
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'chat/static'),
                     os.path.join(BASE_DIR, 'accounts/static'),
                     ]
 
@@ -144,3 +144,4 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
