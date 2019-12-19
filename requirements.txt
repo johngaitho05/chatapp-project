@@ -13,10 +13,7 @@ constantly==15.1.0
 cryptography==2.8
 daphne==2.3.0
 dill==0.3.1.1
-<<<<<<< HEAD
 Django==2.2.6
-=======
->>>>>>> d5d388f5effd95902a2004d86ca51234a44a0a52
 docker==4.1.0
 hiredis==1.0.0
 hyperlink==19.0.0
