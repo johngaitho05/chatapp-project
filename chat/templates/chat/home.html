@@ -17,10 +17,6 @@
                     {% else %}
                         <a class="nav-item nav-link" id="add" href="javascript:{document.getElementById('init-add').submit();}">Add contact</a>
                         <a class="nav-item nav-link" href="{% url 'homepage'%}">Recent chats</a>
-                        <form action="{% url 'add_contact'%}" method="get" id="init-add">
-                            {% csrf_token %}
-                            <input type="hidden"/>
-                        </form>
                     {% endif %}
                     <a class="nav-item nav-link active" href="#">Edit Account</a>
                     <a class="nav-item nav-link " href="javascript:{document.getElementById('logout').submit();}">Logout</a>
@@ -33,7 +29,7 @@
             </nav>
             <div id="pheader">
                 <hr style="padding-bottom: 0;width:100%"/>
-                {%  if mycontacts %}
+                {%  if contacts %}
                     <h5 id="contact-header">Tap to start conversation</h5>
                 {% elif recents %}
                     <h5 id="contact-header">Recent chats</h5>
@@ -46,10 +42,10 @@
                 {% endif %}
             </div>
             <hr style="margin-top: 0"/>
-            {% if chatrooms %}
-                {% for contact, room in chatrooms %}
+            {% if contacts %}
+                {% for contact, room in contacts %}
                     <div id="contacts-log">
-                    <a href="javascript:{window.location.pathname = '/chat/{{room}}/';}">
+                    <a href="javascript:{window.location.pathname = '/chat/{{room.name}}/';}">
                         <div class="card contact">
                             <div style="float:left; height:100%">
                                 <img src="{% static 'chat/img/man.png' %}" alt="image" class="dp"/>
@@ -64,19 +60,23 @@
                 <script type="text/javascript">
                     document.getElementById('contact-header').innerHTML = '{{ message }}';
                 </script>
-            {% elif recents and recents != 'Null' %}
-                {% for contact, text, chatroom in recents %}
-                    <a href="javascript:{window.location.pathname = '/chat/' + {{chatroom}} + '/';}" id="chat_init">
+            {% elif recents %}
+                {% if recents != 'Null' %}
+                {% for contact, room, last_text in recents %}
+                    <a href="javascript:{window.location.pathname = '/chat/{{room.name}}/';}" id="chat_init">
                         <div class="card contact">
                             <div class="image" style="float:left; height:100%">
                                 <img src="{% static 'chat/img/man.png' %}" alt="image" class="dp"/>
                                 <h4>{{ contact.name }}</h4>
                                 <br />
-                                <small style="padding-left: 50px;color:#0900ff;font-style: italic" id="{{ contact.id }}">{{ text }}</small>
+                                <small style="padding-left: 50px;color:#0900ff;font-style: italic" id="{{ contact.id }}">{{ last_text }}</small>
                             </div>
                         </div>
                     </a>
                 {% endfor %}
+                    {% else %}
+                    <p style="padding-top: 50px;">Your recent chats will appear here. It seems that you currently have none</p>
+                    {% endif %}
             {% endif %}
             </div>
         </div>
@@ -84,10 +84,14 @@
             <!-- a list of text messages by a friend -->
             <div class="texts">
                 <div class="header" >
-                    <h3 id="active_user">Chat Panel</h3>
+                    <div id="active_user-panel"><h3 id="active_user">Chat Panel</h3></div>
+                    <div id="add-to-contacts"><a href="javascript:{document.getElementById('init-add').submit();}"  id="save_contact"></a></div>
                 </div>
                 <div id="texts_section">
                     {% if add %}
+                        <script type="text/javascript">
+                            document.getElementById('active_user').innerHTML = 'Add Contact';
+                        </script>
                         <div class="row">
                             <div class="col-md-4 offset-md-4 text-left">
                                 <form action="{% url 'add_contact' %}" method="post" style="padding-top: 150px;">
@@ -95,14 +99,13 @@
                                     {%  if error %}
                                         <span style="color:red;padding-bottom:30px;text-align: center">{{ error }}</span>
                                     {% endif %}
-
-                                    <div class="form-group">
-                                        <label for="phone">Phone Number</label>
-                                        <input type="text" name="phone" class="form-control" />
-                                    </div>
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" name="name" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="text" name="phone" value="{{ phone_number }}" class="form-control" />
                                     </div>
                                     <input type="submit" value="Save" class="btn btn-primary" style="width:100%"/>
                                 </form>
@@ -111,7 +114,11 @@
                     {% elif texts_list  %}
                         <script type="text/javascript">
                             document.getElementById('active_user').innerHTML = '<img src="{% static 'chat/img/man.png' %}" id="activeimg" alt="image" class="dp"/>{{ active_contact.name }}';
+                            {% if active_contact.name == active_contact.phone %}
+                                document.getElementById('save_contact').innerHTML = 'Add to contacts';
+                            {% endif %}
                         </script>
+                        <a></a>
                         {% if texts_list == 'Null' %}
                             <form  class="form-inline" id="input-message">
                                 <div class="form-group" style="width:100%" id="text_form">
@@ -131,16 +138,16 @@
                                     {% else %}
                                         <p class="text-center date" >{{ date }}</p>
                                     {% endif %}
-                                    {% for text in texts %}
+                                    {% for text,time in texts %}
                                         {% if text.author == user %}
                                             <div class="sent">
                                                 <p > {{ text.content }}</p>
-                                                <p class ="time">{{ text.time }}</p>
+                                                <p class ="time">{{ time }}</p>
                                             </div>
                                         {% else %}
                                             <div class="replies">
                                                 <p> {{ text.content }}</p>
-                                                <p class ="time">{{ text.time }}</p>
+                                                <p class ="time">{{ time }}</p>
                                             </div>
                                         {% endif %}
                                     {% endfor %}
@@ -169,6 +176,12 @@
                     </div>
         </div>
     </div>
+    <form action="{% url 'add_contact'%}" method="get" id="init-add">
+        {% csrf_token %}
+    {% if active_contact.name == active_contact.phone %}
+        <input name="phone_number" id="phone_number" value="{{ active_contact.phone }}" type="hidden"/>
+    {% endif %}
+    </form>
     {% if room_name_json %}
         <script type="text/javascript">
             let roomName = {{ room_name_json }};
@@ -214,11 +227,15 @@
             document.querySelector('#send').onclick = function() {
                 let messageInputDom = document.querySelector('#message');
                 let message = messageInputDom.value;
+                let datetime = new Date();
+                let current_time = datetime.getDate()+ '-'+(datetime.getMonth()+1)+'-'+datetime.getFullYear()+ ' '
+                    +datetime.getHours()+':'+datetime.getMinutes()+':'+datetime.getSeconds();
                 chatSocket.send(JSON.stringify({
                     'message': message,
                     'command': 'new_message',
                     'chat_room': roomName,
                     'from':username,
+                    'current_time':current_time
                 }));
                 messageInputDom.value = '';
             };

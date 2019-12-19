@@ -3,10 +3,10 @@ from django.shortcuts import get_object_or_404
 from asgiref.sync import async_to_sync
 from django.contrib.auth import get_user_model
 from channels.generic.websocket import WebsocketConsumer
-from django.utils.safestring import mark_safe
+from datetime import datetime
 import json
 from .models import Message
-from .views import update_last_message,formatted_text
+from .views import update_last_message,formatted_text,update_receiver_contacts
 
 
 User = get_user_model()
@@ -22,8 +22,8 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self,message):
         return {
             'author': message.author.username,
-            'content':message.content,
-            'time':message.time
+            'content': message.content,
+            'time': str(datetime.strftime(message.timestamp, '%H:%M'))
         }
 
     def new_message(self,data):
@@ -31,8 +31,11 @@ class ChatConsumer(WebsocketConsumer):
         content = data['message']
         chat_room = data['chat_room']
         author_user = get_object_or_404(User, username=author)
-        message = Message.objects.create(author=author_user, content=content, chat_room=chat_room)
-        update_last_message(author_user.id, chat_room, content)
+        current_time = datetime.strptime(data['current_time'], '%d-%m-%Y %H:%M:%S')
+        message = Message.objects.create(author=author_user,
+                                         content=content, chat_room=chat_room, timestamp=current_time)
+        update_last_message(chat_room, content)
+        update_receiver_contacts(author_user,chat_room)
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message),

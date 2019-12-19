@@ -40,30 +40,6 @@
      font-size: 25px;
      background-color: #59db09;
  }
-.replies{
-    width:60%;
-    background-color: #13f3de;
-    border-radius: 7px;
-    margin-top: 14px;
-    margin-left: 2%;
-    padding:10px 0 0 10px;
-    line-height: 1.2rem;
-    font-size: 15px;
-}
-.sent p, .replies p{
-    text-align: justify;
-}
-.sent{
-    width:60%;
-    background-color:tan;
-    border-radius:7px;
-    margin-top: 14px;
-    line-height: 1.2rem;
-    font-size: 15px;
-    margin-left: 38%;
-    padding:10px 10px 0 10px;
-}
-
 #input-message{
     position: fixed;
     bottom: 5px;
@@ -106,7 +82,29 @@
      display: inline;
      padding-top: 50px;
  }
-
+.replies{
+    width:60%;
+    background-color: #0bf3e8;
+    border-radius: 7px;
+    margin-top: 14px;
+    margin-left: 2%;
+    line-height: 1.2rem;
+    font-size: 15px;
+    padding:10px 10px 0 10px;
+}
+.sent p, .replies p{
+    text-align: justify;
+}
+.sent{
+    width:60%;
+    background-color: #d2cd6e;
+    border-radius:7px;
+    margin-top: 14px;
+    line-height: 1.2rem;
+    font-size: 15px;
+    margin-left: 38%;
+    padding:10px 10px 0 10px;
+}
  .content{
      padding-top: 200px;
  }
@@ -124,12 +122,8 @@
 }
 
 .time{
-    position: relative;
-    bottom:0;
-    padding-left: 85%;
-    font-size: 14px;
-    margin-bottom: 0;
-    display: inline-block;
+    color:chocolate;
+    text-align: right !important;
 }
 .date{
     margin-bottom: 0.5rem;
@@ -149,6 +143,20 @@
 }
 
 #active_user{
-    padding-left: 33%;
+    padding-left: 2%;
+}
+
+#active_user-panel, #add-to-contacts{
+    float:left;
+    width: 40%;
+}
+#add-to-contacts{
+    text-align: right;
+    padding-right: 7%;
+}
+
+#save_contact{
+    text-align:right !important;
+    font-size:15px;
 }
 
