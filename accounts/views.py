@@ -5,7 +5,7 @@ from django.contrib import auth
 
 
 def signup(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         if request.POST['password1'] == request.POST['password2']:
             try:
                 user = User.objects.get(username=request.POST['phone'])
@@ -23,7 +23,7 @@ def signup(request):
 def login(request):
     if request.method == 'POST':
         user = auth.authenticate(username=request.POST['phone'],password=request.POST['password'])
-        if user is not None:
+        if user is not None and user.is_active:
             auth.login(request, user)
             return redirect('homepage')
         else:
@@ -35,3 +35,6 @@ def logout(request):
     if request.method == 'POST':
         auth.logout(request)
         return redirect('login')
+
+
+

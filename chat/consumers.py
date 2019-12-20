@@ -34,7 +34,7 @@ class ChatConsumer(WebsocketConsumer):
         current_time = datetime.strptime(data['current_time'], '%d-%m-%Y %H:%M:%S')
         message = Message.objects.create(author=author_user,
                                          content=content, chat_room=chat_room, timestamp=current_time)
-        update_last_message(chat_room, content)
+        update_last_message(chat_room, message)
         update_receiver_contacts(author_user,chat_room)
         content = {
             'command': 'new_message',

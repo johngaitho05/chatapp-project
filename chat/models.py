@@ -1,10 +1,7 @@
 
 from django.db import models
-from django.utils import timezone
-from datetime import datetime, time
 from django.contrib.auth import get_user_model
-from datetime import datetime
-import django
+
 
 User = get_user_model()
 
@@ -30,7 +27,8 @@ class Message(models.Model):
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=50)
-    last_message = models.TextField(default='')
+    last_message = models.ForeignKey(Message, related_name='chatroom_last_message'
+                                     , on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.name)

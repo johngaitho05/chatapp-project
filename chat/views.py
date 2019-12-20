@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from chat.models import Contact, Message, ChatRoom
+from .models import Contact, Message, ChatRoom
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -151,8 +151,8 @@ def get_chat_list(user):
         chat_list = []
         for contact in contacts:
             room = get_chat_room(contact, user)
-            if room.last_message != '':
-                chat_list.append((contact, room, formatted_text(room.last_message)))
+            if room.last_message.author.username != 'johnyk':
+                chat_list.append((contact, room, formatted_text(room.last_message.content)))
         if len(chat_list) == 0:
             return
         return chat_list
@@ -168,10 +168,10 @@ def formatted_text(text):
 
 def add_chat_rooms(current_user):
     all_users = User.objects.all()
-    other_users = all_users.exclude(id=current_user.id)
+    other_users = all_users.exclude(id=current_user.id).exclude(username='johnyk')
     for user in other_users:
         new_room = str(user.id) + 'A' + str(current_user.id)
-        ChatRoom.objects.create(name=new_room)
+        ChatRoom.objects.create(name=new_room,last_message=get_default_last_message())
 
 
 def get_chat_rooms(contacts, user):
@@ -188,7 +188,15 @@ def get_chat_room(contact, user):
         room_name = str(contact_owner.id) + 'A' + str(user.id)
     else:
         room_name = str(user.id) + 'A' + str(contact_owner.id)
-    room = get_object_or_404(ChatRoom, name=room_name)
+    try:
+        room = ChatRoom.objects.get(name=room_name)
+    except ChatRoom.DoesNotExist:
+        chatroom_messages = Message.objects.filter(chat_room=room_name).order_by('-timestamp')
+        if chatroom_messages:
+            messages_list = [message for message in chatroom_messages]
+            room = ChatRoom.objects.create(name=room_name,last_message=messages_list[0])
+        else:
+            room = ChatRoom.objects.create(name=room_name, last_message=get_default_last_message())
     return room
 
 
@@ -241,3 +249,8 @@ def update_receiver_contacts(user, chat_room):
 
 def get_current_time():
     pass
+
+
+def get_default_last_message():
+    user = User.objects.get(username = 'johnyk')
+    return Message.objects.get(author=user)
