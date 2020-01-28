@@ -1,4 +1,4 @@
-# A realtime web-bsaed chat Application made in:
+# A realtime web-bsaed chat Application made using:
 
 #### Python
 #### Html,CSS,JavaScript,
