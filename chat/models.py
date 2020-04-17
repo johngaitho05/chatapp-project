@@ -16,7 +16,7 @@ class Contact(models.Model):
 
 
 class Message(models.Model):
-    author = models.ForeignKey(User, related_name="user_messages",on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name="user_messages",on_delete=models.DO_NOTHING)
     content = models.TextField()
     timestamp = models.DateTimeField()
     chat_room = models.CharField(max_length=50)
@@ -27,11 +27,13 @@ class Message(models.Model):
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=50)
-    last_message = models.ForeignKey(Message, related_name='chatroom_last_message'
-                                     , on_delete=models.CASCADE)
+    last_message = models.ForeignKey(Message, related_name='chatroom_last_message',
+                                     null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return str(self.name)
+
+
 
 
 

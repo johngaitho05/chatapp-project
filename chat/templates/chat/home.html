@@ -61,7 +61,6 @@
                     document.getElementById('contact-header').innerHTML = '{{ message }}';
                 </script>
             {% elif recents %}
-                {% if recents != 'Null' %}
                 {% for contact, room, last_text in recents %}
                     <a href="javascript:{window.location.pathname = '/chat/{{room.name}}/';}" id="chat_init">
                         <div class="card contact">
@@ -74,9 +73,8 @@
                         </div>
                     </a>
                 {% endfor %}
-                    {% else %}
-                    <p style="padding-top: 50px;">Your recent chats will appear here. It seems that you currently have none</p>
-                    {% endif %}
+            {% else %}
+                <p style="padding-top: 50px;">Your recent chats will appear here. It seems that you currently have none</p>
             {% endif %}
             </div>
         </div>
@@ -135,6 +133,8 @@
                                 {% for date,texts in texts_list %}
                                     {% if date == today %}
                                         <p class="text-center date" >Today</p>
+                                    {% elif date == yesterday %}
+                                        <p class="text-center date" >Yesterday</p>
                                     {% else %}
                                         <p class="text-center date" >{{ date }}</p>
                                     {% endif %}
@@ -178,14 +178,15 @@
     </div>
     <form action="{% url 'add_contact'%}" method="get" id="init-add">
         {% csrf_token %}
-    {% if active_contact.name == active_contact.phone %}
-        <input name="phone_number" id="phone_number" value="{{ active_contact.phone }}" type="hidden"/>
-    {% endif %}
+        {% if active_contact.name == active_contact.phone %}
+            <input name="phone_number" id="phone_number" value="{{ active_contact.phone }}" type="hidden"/>
+        {% endif %}
     </form>
-    {% if room_name_json %}
+    {% if json_data %}
         <script type="text/javascript">
-            let roomName = {{ room_name_json }};
-            let username = {{ username_json }};
+            {#let json_data = {{ json_data }};#}
+            let username = {{ json_data.username }};
+            let roomName = {{ json_data.room_name }};
 
             let chatSocket = new ReconnectingWebSocket(
                 'ws://' + window.location.host +

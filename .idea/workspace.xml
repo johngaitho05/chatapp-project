@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eb3c3c35-8999-4498-920e-0d1566c42ddb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/consumers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/Signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/Signup.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chat/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat/templates/chat/root.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat/templates/chat/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/chat/templates/chat/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chat/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chatapp/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/chatapp/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -280,6 +282,24 @@
       <workItem from="1576657693629" duration="19216000" />
       <workItem from="1576739321037" duration="14490000" />
       <workItem from="1576769629444" duration="10337000" />
+      <workItem from="1576823449323" duration="840000" />
+      <workItem from="1576830135711" duration="538000" />
+      <workItem from="1576831721438" duration="9777000" />
+      <workItem from="1576914569392" duration="3991000" />
+      <workItem from="1577033004097" duration="326000" />
+      <workItem from="1577093582772" duration="59000" />
+      <workItem from="1577194701428" duration="1962000" />
+      <workItem from="1577802761358" duration="3407000" />
+      <workItem from="1581419245962" duration="2757000" />
+      <workItem from="1582463438884" duration="655000" />
+      <workItem from="1582466197780" duration="2947000" />
+      <workItem from="1582487954174" duration="2076000" />
+      <workItem from="1582805750091" duration="1240000" />
+      <workItem from="1582813162602" duration="690000" />
+      <workItem from="1582875119044" duration="159000" />
+      <workItem from="1586513324377" duration="1223000" />
+      <workItem from="1587100174272" duration="1074000" />
+      <workItem from="1587107552390" duration="10970000" />
     </task>
     <servers />
   </component>

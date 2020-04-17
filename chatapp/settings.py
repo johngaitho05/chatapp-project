@@ -25,13 +25,14 @@ SECRET_KEY = '*+*#17yn78l@3dfuxsja)rshd0e52#iglwj9*!^ucdrscyas$l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['78b07ea8.ngrok.io', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'channels',
+    'chat.apps.ContactsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
-    'chat.apps.ContactsConfig',
 ]
 
 MIDDLEWARE = [
