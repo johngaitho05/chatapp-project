@@ -6,27 +6,26 @@ from channels.generic.websocket import WebsocketConsumer
 from datetime import datetime
 import json
 from .models import Message
-from .views import update_last_message,formatted_text,update_receiver_contacts
-
+from .views import update_last_message, formatted_text, update_receiver_contacts
 
 User = get_user_model()
 
 
 class ChatConsumer(WebsocketConsumer):
-    def messages_to_json(self,messages):
+    def messages_to_json(self, messages):
         result = []
         for message in messages:
             result.append(self.message_to_json(message))
         return result
 
-    def message_to_json(self,message):
+    def message_to_json(self, message):
         return {
             'author': message.author.username,
             'content': message.content,
             'time': str(datetime.strftime(message.timestamp, '%H:%M'))
         }
 
-    def new_message(self,data):
+    def new_message(self, data):
         author = data['from']
         content = data['message']
         chat_room = data['chat_room']
@@ -34,14 +33,16 @@ class ChatConsumer(WebsocketConsumer):
         current_time = datetime.strptime(data['current_time'], '%d-%m-%Y %H:%M:%S')
         message = Message.objects.create(author=author_user,
                                          content=content, chat_room=chat_room, timestamp=current_time)
-        update_last_message(chat_room, message)
-        update_receiver_contacts(author_user,chat_room)
+        print(chat_room)
+        update_last_message(chat_room)
+        update_receiver_contacts(author_user, chat_room)
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message),
             'last_text': formatted_text(content)
         }
         self.send_chat_message(content)
+
     commands = {
         # 'fetch_messages':fetch_messages,
         'new_message': new_message,
@@ -66,7 +67,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         data = json.loads(text_data)
-        self.commands[data['command']](self,data)
+        self.commands[data['command']](self, data)
 
     def send_chat_message(self, message):
         async_to_sync(self.channel_layer.group_send)(
@@ -77,20 +78,9 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
 
-    def send_message(self,message):
+    def send_message(self, message):
         self.send(text_data=json.dumps(message))
 
     def chat_message(self, event):
         message = event['message']
         self.send(text_data=json.dumps(message))
-
-
-
-
-
-
-
-
-
-
-

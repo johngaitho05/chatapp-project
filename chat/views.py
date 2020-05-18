@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.datastructures import MultiValueDictKeyError
+
 from .models import Contact, Message, ChatRoom
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -24,7 +26,10 @@ def show_contacts(request):
 def add_contact(request):
     contacts = get_contacts(request.user)
     if request.method == 'GET':
-        phone_number = request.GET['phone_number']
+        try:
+            phone_number = request.GET['phone_number']
+        except MultiValueDictKeyError:
+            phone_number = ''
         if not contacts[0]:
             if phone_number:
                 return render(request, 'chat/home.html',
@@ -230,5 +235,6 @@ def update_last_message(room_name):
         chat_room = ChatRoom.objects.get(name=room_name)
         message = Message.objects.filter(chat_room=chat_room).order_by('-timestamp').first()
         chat_room.last_message = message
+        chat_room.save()
     except ChatRoom.DoesNotExist:
-        pass
+        print('Chat room not found!')
