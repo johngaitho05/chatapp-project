@@ -140,12 +140,11 @@ def get_contacts(user):
 def get_chat_list(user):
     contacts = Contact.objects.filter(user=user)
     if contacts.count() > 0:
-        chat_list = []
-        for contact in contacts:
-            room = get_chat_room(contact, user)
+        chat_list = [None] * len(contacts)
+        for i in range(len(contacts)):
+            room = get_chat_room(contacts[i], user)
             if room.last_message:
-                chat_list.append((contact, room, formatted_text(room.last_message.content)))
-        print(chat_list)
+                chat_list[i] = (contacts[i], room, formatted_text(room.last_message.content))
         return chat_list
     return
 
@@ -166,10 +165,7 @@ def add_chat_rooms(current_user):
 
 
 def get_chat_rooms(contacts, user):
-    chat_rooms = []
-    for contact in contacts:
-        room = get_chat_room(contact, user)
-        chat_rooms.append((contact, room))
+    chat_rooms = [(contact, get_chat_room(contacts, user)) for contact in contacts]
     return chat_rooms
 
 
@@ -236,19 +232,3 @@ def update_last_message(room_name):
         chat_room.last_message = message
     except ChatRoom.DoesNotExist:
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
