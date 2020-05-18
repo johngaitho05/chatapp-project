@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
-
 from .models import Contact, Message, ChatRoom
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-import operator
 from datetime import date, timedelta
 from django.utils.safestring import mark_safe
 import json
+
+
+def root(request):
+    return redirect('homepage')
 
 
 @login_required
