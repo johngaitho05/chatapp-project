@@ -1,4 +1,4 @@
-# A realtime web-bsaed chat Application made using:
+# A realtime web-based chat Application made using:
 
 #### Python
 #### Html,CSS,JavaScript,
