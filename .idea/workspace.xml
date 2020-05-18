@@ -4,6 +4,8 @@
     <list default="true" id="eb3c3c35-8999-4498-920e-0d1566c42ddb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chat/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/consumers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat/templates/chat/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/chat/templates/chat/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chat/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -284,7 +286,7 @@
       <workItem from="1587100174272" duration="1074000" />
       <workItem from="1587107552390" duration="11924000" />
       <workItem from="1587120189108" duration="7598000" />
-      <workItem from="1589794830189" duration="3764000" />
+      <workItem from="1589794830189" duration="6306000" />
     </task>
     <servers />
   </component>

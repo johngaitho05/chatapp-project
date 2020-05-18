@@ -24,6 +24,9 @@ class Message(models.Model):
     def __str__(self):
         return self.author.username
 
+    def sliced_content(self):
+        return self.content[:40]
+
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=50)
@@ -32,6 +35,7 @@ class ChatRoom(models.Model):
 
     def __str__(self):
         return str(self.name)
+
 
 
 

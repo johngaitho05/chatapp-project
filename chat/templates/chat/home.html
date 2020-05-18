@@ -61,14 +61,14 @@
                     document.getElementById('contact-header').innerHTML = '{{ message }}';
                 </script>
             {% elif recents %}
-                {% for contact, room, last_text in recents %}
+                {% for contact, room in recents %}
                     <a href="javascript:{window.location.pathname = '/chat/{{room.name}}/';}" id="chat_init">
                         <div class="card contact">
                             <div class="image" style="float:left; height:100%">
                                 <img src="{% static 'chat/img/man.png' %}" alt="image" class="dp"/>
                                 <h4>{{ contact.name }}</h4>
                                 <br />
-                                <small style="padding-left: 50px;color:#0900ff;font-style: italic" id="{{ contact.id }}">{{ last_text }}</small>
+                                <small style="padding-left: 50px;color:#0900ff;font-style: italic" id="{{ contact.id }}">{{ room.last_message.sliced_content }}</small>
                             </div>
                         </div>
                     </a>

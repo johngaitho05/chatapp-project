@@ -6,7 +6,7 @@ from channels.generic.websocket import WebsocketConsumer
 from datetime import datetime
 import json
 from .models import Message
-from .views import update_last_message, formatted_text, update_receiver_contacts
+from .views import update_last_message, update_receiver_contacts
 
 User = get_user_model()
 
@@ -33,13 +33,12 @@ class ChatConsumer(WebsocketConsumer):
         current_time = datetime.strptime(data['current_time'], '%d-%m-%Y %H:%M:%S')
         message = Message.objects.create(author=author_user,
                                          content=content, chat_room=chat_room, timestamp=current_time)
-        print(chat_room)
         update_last_message(chat_room)
         update_receiver_contacts(author_user, chat_room)
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message),
-            'last_text': formatted_text(content)
+            'last_text': message.sliced_content()
         }
         self.send_chat_message(content)
 
@@ -78,6 +77,7 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
 
+    # sending message to the channel
     def send_message(self, message):
         self.send(text_data=json.dumps(message))
 

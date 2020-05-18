@@ -136,9 +136,7 @@ def get_contacts(user):
         count = '1 contact'
     else:
         count = str(len(saved_contacts)) + ' contacts'
-
-    user_contacts = [contact for contact in saved_contacts]
-    return [get_chat_rooms(user_contacts, user), count]
+    return [get_chat_rooms(saved_contacts, user), count]
 
 
 # returns a list of recent chats to display on the homepage
@@ -149,16 +147,9 @@ def get_chat_list(user):
         for contact in contacts:
             room = get_chat_room(contact, user)
             if room.last_message:
-                chat_list.append((contact, room, formatted_text(room.last_message.content)))
+                chat_list.append((contact, room))
         return chat_list
     return
-
-
-def formatted_text(text):
-    if len(text) > 40:
-        return text[:40] + '...'
-    else:
-        return text
 
 
 def add_chat_rooms(current_user):
