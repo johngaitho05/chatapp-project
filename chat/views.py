@@ -49,27 +49,28 @@ def add_contact(request):
         phone = request.POST['phone']
         if name and phone:
             try:
-                new_user = User.objects.get(username=phone)
-                if new_user == user:
+                other_user = User.objects.get(username=phone)
+                if other_user == user:
                     return render(request, 'chat/home.html',
                                   {'count': contacts[1], 'contacts': contacts[0], 'add': 'yes',
                                    'error': "You can't add your own number to contacts"})
                 else:
                     try:
-                        contact = Contact.objects.get(phone=phone, user=user)
-                        if contact.name != contact.phone:
+                        contact = Contact.objects.get(owner=other_user, saver=user)
+                        if contact.saved_as != contact.owner.username:
                             return render(request, 'chat/home.html',
                                           {'count': contacts[1], 'contacts': contacts[0], 'add': 'yes',
                                            'error': 'That number already exists in your contacts', })
                         else:
-                            contact.name = name
+                            print("auto saved contact. Editing...")
+                            contact.saved_as = name
                             contact.save()
                             contacts = get_contacts(request.user)
                             return render(request, 'chat/home.html',
                                           {'count': contacts[1], 'contacts': contacts[0], 'add': 'yes'})
 
                     except Contact.DoesNotExist:
-                        new_contact = Contact(user=user, phone=phone, name=name)
+                        new_contact = Contact(saver=user, owner=other_user, saved_as=name)
                         new_contact.save()
                         contacts = get_contacts(request.user)
                         return render(request, 'chat/home.html',
@@ -100,10 +101,10 @@ def chat(request, room_name):
     yesterday = today - timedelta(1)
     json_data = {'room_name': mark_safe(json.dumps(room_name)),
                  'username': mark_safe(json.dumps(request.user.username))}
-    active_contact = get_object_or_404(Contact, user=request.user,
-                                       phone=get_active_contact_username(request.user.id, room_name))
-    texts_list = get_texts(room_name)
-    chat_list = get_chat_list(request.user)
+    active_contact = get_active_contact(request.user, room_name)
+    room = get_or_create(room_name)
+    texts_list = get_texts(room)
+    chat_list = get_recents(request.user)
     if not texts_list:
         texts_list = 'Null'
     if chat_list is not None:
@@ -126,13 +127,13 @@ def chat(request, room_name):
 
 @login_required
 def home(request):
-    chat_list = get_chat_list(request.user)
+    chat_list = get_recents(request.user)
     return render(request, 'chat/home.html', {'recents': chat_list})
 
 
 def get_contacts(user):
-    all_contacts = Contact.objects.filter(user=user)
-    saved_contacts = [contact for contact in all_contacts if contact.name != contact.phone]
+    all_contacts = Contact.objects.filter(saver=user)
+    saved_contacts = [contact for contact in all_contacts if contact.saved_as != contact.owner.username]
     if len(saved_contacts) == 1:
         count = '1 contact'
     else:
@@ -141,8 +142,8 @@ def get_contacts(user):
 
 
 # returns a list of recent chats to display on the homepage
-def get_chat_list(user):
-    contacts = Contact.objects.filter(user=user)
+def get_recents(user):
+    contacts = Contact.objects.filter(saver=user)
     if contacts.count() > 0:
         chat_list = []
         for contact in contacts:
@@ -167,20 +168,20 @@ def get_chat_rooms(contacts, user):
 
 
 def get_chat_room(contact, user):
-    contact_owner = User.objects.get(username=contact.phone)
+    contact_owner = contact.owner
     if contact_owner.id < user.id:
         room_name = str(contact_owner.id) + 'A' + str(user.id)
     else:
         room_name = str(user.id) + 'A' + str(contact_owner.id)
+    room = get_or_create(room_name)
+    return room
+
+
+def get_or_create(room_name):
     try:
         room = ChatRoom.objects.get(name=room_name)
     except ChatRoom.DoesNotExist:
-        chatroom_messages = Message.objects.filter(chat_room=room_name).order_by('-timestamp')
-        if chatroom_messages:
-            messages_list = [message for message in chatroom_messages]
-            room = ChatRoom.objects.create(name=room_name, last_message=messages_list[0])
-        else:
-            room = ChatRoom.objects.create(name=room_name)
+        room = ChatRoom.objects.create(name=room_name)
     return room
 
 
@@ -190,43 +191,41 @@ def get_active_contact_username(user_id, chat_room):
     return active_contact_username
 
 
-def get_active_contact_id(user_id, chat_room):
-    id_list = chat_room.split('A')
+def get_active_contact(user, room_name):
+    return get_object_or_404(User, id=get_active_contact_id(user.id, room_name))
+
+
+def get_active_contact_id(user_id, room_name):
+    id_list = room_name.split('A')
     if int(id_list[0]) == user_id:
         return int(id_list[1])
     elif int(id_list[1]) == user_id:
         return int(id_list[0])
-    else:
-        get_object_or_404(User, id=-1)
+    return -1
 
 
-def get_texts(room_name):
-    messages = Message.objects.filter(chat_room=room_name)
+def get_texts(room):
+    messages = Message.objects.filter(chat_room=room)
     date_list = [message.timestamp.date() for message in messages]
     date_set = sorted(set(date_list))
     texts_list = [None] * len(date_set)
     for i in range(len(date_set)):
         message_date = date_set[i]
-        texts = [(message, message.timestamp.time()) for message in messages if
+        texts = [message for message in messages if
                  message.timestamp.date() == message_date]
         texts_list[i] = (message_date, texts)
     return texts_list
 
 
-def update_receiver_contacts(user, chat_room):
-    phone = get_active_contact_username(user.id, chat_room)
-    receiver = User.objects.get(username=phone)
+def update_receiver_contacts(user, room_name):
+    receiver = get_active_contact(user, room_name)
     try:
-        Contact.objects.get(user=receiver, phone=user.username)
+        Contact.objects.get(saver=receiver, owner=user)
     except Contact.DoesNotExist:
-        Contact.objects.create(user=receiver, phone=user.username, name=user.username)
+        Contact.objects.create(saver=receiver, owner=user, saved_as=user.username)
 
 
-def update_last_message(room_name):
-    try:
-        chat_room = ChatRoom.objects.get(name=room_name)
-        message = Message.objects.filter(chat_room=chat_room).order_by('-timestamp').first()
-        chat_room.last_message = message
-        chat_room.save()
-    except ChatRoom.DoesNotExist:
-        print('Chat room not found!')
+def update_last_message(chat_room):
+    message = Message.objects.filter(chat_room=chat_room).order_by('-timestamp').first()
+    chat_room.last_message = message
+    chat_room.save()
