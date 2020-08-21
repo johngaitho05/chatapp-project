@@ -1,41 +1,48 @@
 {% extends 'chat/base.html' %}
 {% load staticfiles %}
+{% load crispy_forms_tags %}
 {% block css %}
-{% static  'accounts/style.css' %}
+    {% static  'accounts/style.css' %}
 {% endblock %}
 {% block body %}
-        <div class="col-md-4 col-sm-6 col-xs-12 offset-md-4 offset-sm-3" id="loginform">
-
-            <h3 class="text-center">Sign-up Form </h3>
-        <br/>
-            {% if error  %}
-                 <span style="color:red;">{{ error }}</span>
-                <br/>
-            {% endif %}
-
-            <form action="{% url 'signup' %}" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input type="text" name="fname" class="form-control" placeholder="First Name"/>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="lname" class="form-control" placeholder="Last Name"/>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="phone" class="form-control" placeholder="Phone Number"/>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password1" class="form-control" placeholder="Password"/>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password2" class="form-control" placeholder="Password"/>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Sign up" class="btn btn-primary" style="width:100%"/>
-                </div>
-            </form>
-        <a href="{% url 'login' %}">
-                <p class="text-center">Login</p>
-            </a>
+    <div class="row">
+        <div class="col-lg-6 wrapper">
+            <div class="splash">
+                <h1>SmartChat</h1>
+                <p>A modern, easy to use messaging platform</p>
+            </div>
         </div>
+        <div class="col-lg-6 wrapper">
+            <div id="signUpForm">
+                <form  method="post">
+                    {% csrf_token %}
+                    <h4 style="margin-bottom: 2em; text-align: center">Become a SmartChat Member by creating your FREE account today</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-6">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-6">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-6">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-6">
+                            {{ form.username|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div style="padding-left: 1em">
+                        <button style="margin-top:2em; padding:.5em 1.5em; color:#2c91f4" type="submit" class="btn btn-outline-primary text-center">SIGN UP</button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center" style="padding-top: 5px;">
+                    <small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

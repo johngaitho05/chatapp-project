@@ -1,3 +1,66 @@
-#loginform{
-    margin-top: 15%;
+@import url("https://fonts.googleapis.com/css2?family=Mukta+Mahee&display=swap");
+
+.row{
+    margin:0;
+    padding:0;
 }
+.wrapper{
+    padding:0;
+}
+.block-wrapper{
+    min-height: 100vh;
+}
+.wrapper:first-of-type{
+    min-height:100vh;
+    background-color: #435df4;
+    background-image: url("smartchat-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: luminosity;
+}
+.splash{
+    background-color: rgba(136, 136, 136, 0.68);
+    height: 100%;
+    color: #fff;
+    font-size: 2em;
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.splash h1{
+    font-size: 2.5em;
+}
+#signUpForm{
+    padding-top: 3em;
+}
+.login-wrapper{
+    width: 100%;
+    min-height: 100vh;
+    background-image: url("login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-color: #435df4;
+    background-blend-mode: luminosity;
+}
+.login-inner-wrapper{
+    width:100%;
+    min-height:100vh;
+    background-color: rgba(136, 136, 136, 0.68);
+}
+#loginForm{
+    background-color: white;
+    padding:2rem;
+    position:absolute;
+    min-width: 400px;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    line-height: 2.5em;
+}
+
+form h4, #loginForm h3{
+    font-family: 'Mukta Mahee', sans-serif;
+    color: #5bb6ff;
+}
+

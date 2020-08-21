@@ -132,7 +132,7 @@ def home(request):
 
 
 def get_contacts(user):
-    all_contacts = Contact.objects.filter(saver=user)
+    all_contacts = user.contacts.all()
     saved_contacts = [contact for contact in all_contacts if contact.saved_as != contact.owner.username]
     if len(saved_contacts) == 1:
         count = '1 contact'

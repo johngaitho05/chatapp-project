@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['78b07ea8.ngrok.io', '127.0.0.1']
 
 INSTALLED_APPS = [
     'channels',
+    'crispy_forms',
     'chat.apps.ContactsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -144,4 +145,23 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'homepage'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

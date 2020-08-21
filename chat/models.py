@@ -5,8 +5,8 @@ User = get_user_model()
 
 
 class Contact(models.Model):
-    saver = models.ForeignKey(User, related_name="contact_saver", on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, related_name="associated_user", on_delete=models.CASCADE)
+    saver = models.ForeignKey(User, related_name="contacts", on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name="+", on_delete=models.CASCADE)
     saved_as = models.CharField(max_length=50)
 
     def __str__(self):
